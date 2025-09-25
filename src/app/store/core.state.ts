@@ -1,11 +1,6 @@
-import { ICore } from "../interfaces/icore";
 import { signalStoreFeature, withState } from "@ngrx/signals"
 import { withCallState } from "@angular-architects/ngrx-toolkit"
-
-export interface CoreState {
-    cpus: ICore[],
-    cpu: ICore,
-}
+import { CoreState } from "../interfaces/icore.state";
 
 export const initialCoreState: CoreState = {
     cpus: [],
