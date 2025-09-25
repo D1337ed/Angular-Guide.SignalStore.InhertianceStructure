@@ -9,7 +9,7 @@ export class SCore {
   
   private readonly http = inject(HttpClient);
 
-  private cpuUrl = 'http://localhost:xxxx';
+  private cpuUrl = 'http://localhost:5294';
 
   getAll() {
     return this.http.get<ICore[]>(`${this.cpuUrl}/all`);
