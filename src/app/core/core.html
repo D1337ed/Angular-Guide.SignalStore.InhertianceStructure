@@ -1,0 +1,5 @@
+<p>total cpus: {{ store.totalCpus() }}</p>
+
+@for (cpu of store.cpus(); track cpu.id) {
+    <p>({{ cpu.id }}), {{ cpu.name }} made by {{ cpu.manufacturer }} for {{ cpu.function }}</p>
+}
