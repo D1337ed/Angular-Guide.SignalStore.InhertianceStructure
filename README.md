@@ -31,6 +31,7 @@ For the `withCallState` Function a Collection Name. This is personal Preference 
 
 For the Callbacks in `tapResponse`, using all 4 (`next`, `error`, `complete`, `finalize`) provided Callbacks. This is personal Preference but helps keeping the different possible States separate in Combination with `withCallState` and `tap`:
 
+```js
         tapResponse({
             next: (data) => patchState(store, { data: data }),
             error: (err) => patchState(store, setError(collectionName)),
@@ -41,6 +42,7 @@ For the Callbacks in `tapResponse`, using all 4 (`next`, `error`, `complete`, `f
                 : store.collectionNameCallState()
             }`)
         })
+```
 
 ---
 
@@ -103,8 +105,10 @@ __ng add__
 
 ### [`state.ts`](src/app/store/core.state.ts)
 
+```js
         import { signalStoreFeature, withState } from "@ngrx/signals"
         import { withCallState } from "@angular-architects/ngrx-toolkit"
+```
 
 4. Create the `state.ts` File using your Component Name as Prefix.  
 The `component.state.ts` File houses the [`initialState`](src/app/store/core.state.ts#L5#C14) of your Component Store.  
@@ -113,19 +117,23 @@ Now `return` a `signalStoreFeature()` to merge a Sequence of Features into a sin
 Add the base Feature `withState` to add your [`initalComponentState`](src/app/store/core.state.ts#L17#C19).  
 (`withCallState` is optional, [`see Dependencies`](#dependencies)).
 
+```js
         export function with_ComponentState() {
             return signalStoreFunction(
                 withState(initialComponentState),
                 withCallState('collectionName')
             )
         }
+```
 
 ---
 
 ### [`computed.ts`](src/app/store/core.computed.ts)
 
+```js
         import { signalStoreFeature, withComputed } from "@ngrx/signals";
         import { computed } from "@angular/core";
+```
 
 5. Create the `computed.ts` File using your Component Name as Prefix.  
 The `component.computed.ts` File houses all your [`computed Signals`](src/app/store/core.computed.ts#L9#C13) which should be mostly calculation Functions for things such as "total of items", since they are read-only and depend on other Signals to provide a Value.  
@@ -133,6 +141,7 @@ Add the previously created custom Feature (`with_ComponentState()`) as first Ent
 Add the base Feature `withComputed` and pass the `store`.  
 Finally add your computed Signal Functions.
 
+```js
         export function with_ComponentComputed() {
             return signalStoreFeature(
                 with_ComponentState(),
@@ -141,17 +150,20 @@ Finally add your computed Signal Functions.
                 }))
             )
         }
+```
 
 ---
 
 ### [`methods.ts`](src/app/store/core.methods.ts)
 
+```js
         import { patchState, signalStoreFeature, withMethods, withProps } from "@ngrx/signals";
         import { setLoading, setLoaded, setError } from "@angular-architects/ngrx-toolkit";
         import { inject } from "@angular/core";
         import { tapResponse } from "@ngrx/operators";
         import { rxMethod } from "@ngrx/signals/rxjs-interop";
         import { pipe, tap, switchMap } from "rxjs";
+```
 
 6. Create the `methods.ts` File using your Component Name as Prefix.  
 The `component.methods.ts` File houses the Methods the Application/User can use to change the States in the Store such as CRUD Operations.  
@@ -166,6 +178,7 @@ Now add a [`tapResponse`](https://ngrx.io/guide/operators/operators#tapresponse)
 The `error` Callback is used to change the Store State in case an Error occurs.  
 `complete` runs when the Operation succeeds while `finalize` runs regardless of the Outcome of the Operation.  
 
+```js
         export function with_ComponentMethods() {
             with_ComponentComputed(),
             withProps(() => ({
@@ -193,12 +206,15 @@ The `error` Callback is used to change the Store State in case an Error occurs.
                 )
             }))
         }
+```
 
 ---
 
 ### [`hooks.ts`](src/app/store/core.hooks.ts)
 
+```js
         import { signalStoreFeature, withHooks } from "@ngrx/signals";
+```
 
 7. Create the `hooks.ts` File using your Component Name as Prefix.  
 The `component.hooks.ts` File lets you run additional logic which should be executed when the Store gets initialized or destroyed and provides two Methods, `onInit()` and `onDestroy()`.  
@@ -206,6 +222,7 @@ Add the previously created custom Feature (`with_ComponentMethods()`) as first E
 Add the base Feature `withHooks()` and add either hook; `onInit()`, `onDestroy()` or both.  Either of them takes the `store` as Argument.  
 Now to have Data initially loaded into the Store, access a previously defined get-Request through the `store` in the `onInit(store)` Function.  
 
+```js
         export function with_ComponentHooks() {
             return signalStoreFeature(
                 with_ComponentMethods(),
@@ -216,24 +233,29 @@ Now to have Data initially loaded into the Store, access a previously defined ge
                 })
             )
         }
+```
 
 ---
 
 ### [`store.ts`](src/app/store/core.store.ts)
 
+```js
         import { signalStore } from "@ngrx/signals";
+```
 
 8. Finally, create the `store.ts` File using your Component Name as Prefix.  
 The `component.store.ts`File is where you create your `store` with the [`signalStore`](https://ngrx.io/guide/signals/signal-store) Keyword.  
 By adding `providedIn: 'root'` the Store will be made [`globally`](https://ngrx.io/guide/signals/signal-store#providing-and-injecting-the-store) available.  
 Add the previously created custom Feature (`with_ComponentHooks()`) as only Entry to the `signalStoreFeature()` so the Store knows of the `initialComponentState`
 
+```js
         export const ComponentStore = signalStore(
             {
                 providedIn: 'root'
             },
             with_ComponentHooks()
         )
+```
 
 ---
 
@@ -241,7 +263,9 @@ Add the previously created custom Feature (`with_ComponentHooks()`) as only Entr
 
 9. To be able to access the Store in html Templates, inject your Store in the according Class as follows:  
 
+```js
         store = inject(ComponentStore);
+```
 
 ---
 
@@ -250,8 +274,10 @@ Add the previously created custom Feature (`with_ComponentHooks()`) as only Entr
 10. To use States from your Store in html Templates, call the store in with Interpolation "{{ }}" and the desired State or Property of State.  
 Iterations work by making a Loop and passing the 'to be iterated' Store State.  
 
+```js
         {{ store.state() }}
         {{ store.state().property }}
         @for (item of store.items(); track item.id) {
             {{ item.name }}, {{ item.date }}
         }
+```
