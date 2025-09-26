@@ -6,11 +6,11 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 This SignalStore is built around Inheritance using [`signalStoreFeature()`](https://ngrx.io/guide/signals/signal-store/custom-store-features) from NgRx for custom SignalStore Features. By passing the State through various custom Features the Store only requires the last Link from the Inheritance Chain, making the whole Project Tree cleaner, more structured and easier to overview. The initial Setup however can be somewhat difficult and is prone to Human Errors. 
 
->__NOTE:__ The Example has two `delay` Functions located right after both get-Requests to showcase `withCallState`, they can be removed without causing any issues.
+> [!NOTE]
+> The Example has two `delay` Functions located right after both get-Requests to showcase `withCallState`, they can be removed without causing any issues.
 
+> [!TIP]
 > Each File has the "to-be-used" Imports at the beginning in case of import Errors and/or not recognized Methods.
-
-
 
 ## Used Naming Conventions
 
