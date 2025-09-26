@@ -17,13 +17,18 @@ export function with_CoreMethods() {
         withMethods((store) => ({
             getAll: rxMethod<void>(
                 pipe(
-                    tap(() => setLoading()),
+                    tap(() => patchState(store, setLoading('cpus'))),
                     switchMap(() => {
                         return store.s_Core.getAll().pipe(
                             tapResponse({
                                 next: (cpus) => patchState(store, { cpus: cpus }),
-                                error: (err) => patchState(store, setError(err)),
-                                finalize: () => setLoaded()
+                                error: (err) => patchState(store, setError(err, 'cpus')),
+                                complete: () => patchState(store, setLoaded('cpus')),
+                                finalize: () => console.log(`Final Call State after getAll(): ${
+                                    store.cpusError() 
+                                    ? store.cpusError() 
+                                    : store.cpusCallState()
+                                }`)
                             })
                         )
                     })
@@ -31,13 +36,18 @@ export function with_CoreMethods() {
             ),
             get: rxMethod<number>(
                 pipe(
-                    tap(() => setLoading()),
+                    tap(() => patchState(store, setLoading('cpus'))),
                     switchMap((cpuId: number) => {
                         return store.s_Core.get(cpuId).pipe(
                             tapResponse({
                                 next: (cpu) => patchState(store, { cpu: cpu }),
-                                error: (err) => patchState(store, setError(err)),
-                                finalize: () => setLoaded()
+                                error: (err) => patchState(store, setError(err, 'cpus')),
+                                complete: () => patchState(store, setLoaded('cpus')),
+                                finalize: () => console.log(`Final Call States after get():
+                                    Cpu Error State: ${store.cpusError()}
+                                    Cpu Loading State: ${store.cpusLoading()}
+                                    Cpu Loaded State: ${store.cpusLoaded()}
+                                    `)
                             })
                         )
                     })
@@ -45,13 +55,18 @@ export function with_CoreMethods() {
             ),
             create: rxMethod<ICore>(
                 pipe(
-                    tap(() => setLoading()),
+                    tap(() => patchState(store, setLoading('cpus'))),
                     switchMap((cpu: ICore) => {
                         return store.s_Core.create(cpu).pipe(
                             tapResponse({
                                 next: () => patchState(store, { cpu }),
-                                error: (err) => patchState(store, setError(err)),
-                                finalize: () => setLoaded()
+                                error: (err) => patchState(store, setError(err, 'cpus')),
+                                complete: () => patchState(store, setLoaded('cpus')),
+                                finalize: () => console.log(`Final Call States after create(): ${
+                                    store.cpusError() 
+                                    ? store.cpusError() 
+                                    : store.cpusCallState()
+                                }`)
                             })
                         )
                     })
@@ -59,13 +74,18 @@ export function with_CoreMethods() {
             ),
             update: rxMethod<ICore>(
                 pipe(
-                    tap(() => setLoading()),
+                    tap(() => patchState(store, setLoading('cpus'))),
                     switchMap((patch: ICore) => {
                         return store.s_Core.update(patch).pipe(
                             tapResponse({
                                 next: () => patchState(store, { cpu: patch }),
-                                error: (err) => patchState(store, setError(err)),
-                                finalize: () => setLoaded()
+                                error: (err) => patchState(store, setError(err, 'cpus')),
+                                complete: () => patchState(store, setLoaded('cpus')),
+                                finalize: () => console.log(`Final Call States after update(): ${
+                                    store.cpusError() 
+                                    ? store.cpusError() 
+                                    : store.cpusCallState()
+                                }`)
                             })
                         )
                     })
@@ -73,13 +93,18 @@ export function with_CoreMethods() {
             ),
             delete: rxMethod<number>(
                 pipe(
-                    tap(() => setLoading()),
+                    tap(() => patchState(store, setLoading('cpus'))),
                     switchMap((cpuId: number) => {
                         return store.s_Core.delete(cpuId).pipe(
                             tapResponse({
                                 next: () => patchState(store, {}),
-                                error: (err) => patchState(store, setError(err)),
-                                finalize: () => setLoaded()
+                                error: (err) => patchState(store, setError(err, 'cpus')),
+                                complete: () => patchState(store, setLoaded('cpus')),
+                                finalize: () => console.log(`Final Call States after delete(): ${
+                                    store.cpusError() 
+                                    ? store.cpusError() 
+                                    : store.cpusCallState()
+                                }`)
                             })
                         )
                     })

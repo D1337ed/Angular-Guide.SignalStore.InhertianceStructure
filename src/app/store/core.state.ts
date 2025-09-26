@@ -15,6 +15,6 @@ export const initialCoreState: CoreState = {
 export function with_CoreState() {
     return signalStoreFeature(
         withState(initialCoreState),
-        withCallState(),
+        withCallState({ collection: 'cpus' }),
     )
 }
