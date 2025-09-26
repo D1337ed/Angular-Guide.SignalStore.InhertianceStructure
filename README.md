@@ -93,8 +93,8 @@ __ng add__
 ```bash
         npm i @angular-architects/ngrx-toolkit
         npm i @ngrx/operators
-        ng add @ngrx/signals@latest
-        ng add @ngrx/store@latest
+        npm i @ngrx/signals
+        npm i @ngrx/store
 ```
 
 2. Provide the Http Client in the `providers:[]` in [`app.config.ts](src/app/app.config.ts) and create your Service
@@ -187,7 +187,7 @@ The `error` Callback is used to change the Store State in case an Error occurs.
             withMethods((store) => ({
                 getRequest: rxMethod<Tpye>(
                     pipe(
-                        tap(() => patchState(store, setLoading('collectionName))),
+                        tap(() => patchState(store, setLoading('collectionName'))),
                         switchMap(() => {
                             return store.service.getRequest().pipe(
                                 tapResponse({
