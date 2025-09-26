@@ -1,5 +1,18 @@
-<p>total cpus: {{ store.totalCpus() }}</p>
+{{ store.cpusCallState() }}
 
-@for (cpu of store.cpus(); track cpu.id) {
-    <p>({{ cpu.id }}), {{ cpu.name }} made by {{ cpu.manufacturer }} for {{ cpu.function }}</p>
+@if (store.cpusLoaded()) {
+    <p>total cpus loaded with onInit hook: {{ store.totalCpus() }}</p>
+
+    @for (cpu of store.cpus(); track cpu.id) {
+        <p>({{ cpu.id }}), {{ cpu.name }} made by {{ cpu.manufacturer }} for {{ cpu.function }}</p>
+    }
+
+    @if (store.cpu().id == 0) {
+        <button type="button" (click)="store.get(2)">populate the empty cpu</button>
+        <p>({{ store.cpu().id }}), {{ store.cpu().name }} made by {{ store.cpu().manufacturer }} for {{ store.cpu().function }}</p>
+    } @else {
+        <p>({{ store.cpu().id }}), {{ store.cpu().name }} made by {{ store.cpu().manufacturer }} for {{ store.cpu().function }}</p>
+    }
+} @else {
+    {{ store.cpusError() }}
 }

@@ -5,7 +5,7 @@ import { patchState, signalStoreFeature, withMethods, withProps } from "@ngrx/si
 import { setLoading, setLoaded, setError } from "@angular-architects/ngrx-toolkit";
 import { tapResponse } from "@ngrx/operators";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { pipe, tap, switchMap } from "rxjs";
+import { pipe, tap, switchMap, delay } from "rxjs";
 import { ICore } from "../interfaces/icore";
 
 export function with_CoreMethods() {
@@ -20,6 +20,7 @@ export function with_CoreMethods() {
                     tap(() => patchState(store, setLoading('cpus'))),
                     switchMap(() => {
                         return store.s_Core.getAll().pipe(
+                            delay(2000),
                             tapResponse({
                                 next: (cpus) => patchState(store, { cpus: cpus }),
                                 error: (err) => patchState(store, setError(err, 'cpus')),
@@ -39,6 +40,7 @@ export function with_CoreMethods() {
                     tap(() => patchState(store, setLoading('cpus'))),
                     switchMap((cpuId: number) => {
                         return store.s_Core.get(cpuId).pipe(
+                            delay(500),
                             tapResponse({
                                 next: (cpu) => patchState(store, { cpu: cpu }),
                                 error: (err) => patchState(store, setError(err, 'cpus')),
