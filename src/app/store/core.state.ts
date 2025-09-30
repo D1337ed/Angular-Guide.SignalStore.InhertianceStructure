@@ -1,8 +1,13 @@
 import { signalStoreFeature, withState } from "@ngrx/signals"
 import { withCallState } from "@angular-architects/ngrx-toolkit"
-import { CoreState } from "../interfaces/icore.state";
+import { ICore } from "../interfaces/icore";
 
-export const initialCoreState: CoreState = {
+export interface ICoreState {
+    cpus: ICore[],
+    cpu: ICore,
+}
+
+export const initialCoreState: ICoreState = {
     cpus: [],
     cpu: {
         id: 0,
