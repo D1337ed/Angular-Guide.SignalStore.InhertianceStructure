@@ -7,7 +7,15 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Project Structure
 
-This singular SignalStore is built around Inheritance using [`signalStoreFeature()`](https://ngrx.io/guide/signals/signal-store/custom-store-features) from NgRx for custom SignalStore Features. By passing the State through various custom Features the Store only requires the last Link from the Inheritance Chain, making the whole Project Tree cleaner, more structured and easier to overview. The initial Setup however can be somewhat difficult and is prone to Human Errors. 
+This singular SignalStore is built around Inheritance using [`signalStoreFeature()`](https://ngrx.io/guide/signals/signal-store/custom-store-features) from NgRx for custom SignalStore Features. By passing the State through various custom Features the Store only requires the last Link from the Inheritance Chain, making the whole Project Tree cleaner, more structured and easier to overview. Setting it up for the first time with no guidance however can be somewhat difficult and is prone to Human Errors. 
+
+## File Overview
+
+### - [`state`](#statets)
+### - [`computed`](#computedts)
+### - [`methods`](#methodsts)
+### - [`hooks`](#hooksts)
+### - [`store`](#storets)
 
 > [!NOTE]
 > The Example has two `delay` Functions located right after both get-Requests to showcase `withCallState`, they can be removed without causing any issues.
@@ -30,7 +38,7 @@ For Services, captial "s" as Prefix. This Naming Convention is personal Preferen
 `S[Service]`
 
 For the `withCallState` Function a Collection Name. This is personal Preference but helps keeping track if multiple Call States are in Play:
-`withCallState('collectionName')`
+`withCallState({'collection: collectionName' })`
 
 For the Callbacks in `tapResponse`, using all 4 (`next`, `error`, `complete`, `finalize`) provided Callbacks. This is personal Preference but helps keeping the different possible States separate in Combination with `withCallState` and `tap`:
 
@@ -124,7 +132,7 @@ Add the base Feature `withState` to add your [`initalComponentState`](src/app/st
         export function with_ComponentState() {
             return signalStoreFunction(
                 withState(initialComponentState),
-                withCallState('collectionName')
+                withCallState({ collection: 'collectionName' })
             )
         }
 ```
@@ -175,10 +183,10 @@ Optionally inject your Services in the base Feature `withProps()` to remove the 
 Add the base Feature `withMethods()` and pass the store.  
 Note that `rxMethod` from [`@ngrx/signals/rxjs-interop`](https://ngrx.io/guide/signals/rxjs-integration) always requires a Type such as `void`, `number`, `string`...  
 `pipe` is used to chain the RxJS Operators such as [`tap`](https://rxjs.dev/api/operators/tap) and [`switchMap`](https://rxjs.dev/api/operators/switchMap) together.  
-If `withCallState` is being used, `tap` can patch the Store and set the State to loading, make sure to use the proper Collection Name if the Feature is being used.  
+If `withCallState` is being used, `tap` can be used to patch the Store and set the State to loading. Make sure to use the proper Collection Name if the Feature is being used.  
 Using your `store` you can now access Methods from your [`service`](src/app/services/score.ts#L8#C14).  
 Now add a [`tapResponse`](https://ngrx.io/guide/operators/operators#tapresponse) with another `pipe` and use the `next` Callback for your Data.  
-The `error` Callback is used to change the Store State in case an Error occurs.  
+The `error` Callback is used to change the Store State in case an Error occurs, add the Collection Name the same way as in `tap`, as additional Argument after `err`.  
 `complete` runs when the Operation succeeds while `finalize` runs regardless of the Outcome of the Operation.  
 
 ```js
@@ -195,7 +203,7 @@ The `error` Callback is used to change the Store State in case an Error occurs.
                             return store.service.getRequest().pipe(
                                 tapResponse({
                                     next: (items) => patchState(store, { items: items }),
-                                    error: (err) => patchState(store, setError(err)),
+                                    error: (err) => patchState(store, setError(err, 'collectionName')),
                                     complete: () => patchState(store, setLoaded()),
                                     finalize: () => console.log(`Items Call State: ${
                                         store.itemsError() 
@@ -284,3 +292,4 @@ Iterations work by making a Loop and passing the 'to be iterated' Store State.
             {{ item.name }}, {{ item.date }}
         }
 ```
+[`Back to Top`](#a-signalstore-example-with-angular-v20-and-ngrx-using-an-inheritance-approach)
